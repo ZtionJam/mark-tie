@@ -1,35 +1,59 @@
 <template>
-  <div id="login_box" :key="key">
-    <div class="head"><div class="close_b" title="关闭" @click="closeFn()"><img src="../assets/icon/close.png" alt/></div> <div class="login_title">Cookie登录</div></div>
-    <div></div>
+  <div id="login_box">
+    <div class="head">
+      <div class="close_b" title="关闭" @click="closeFn()"><img src="../assets/icon/close.png" alt/></div>
+      <div class="login_title">Cookie登录</div>
+    </div>
+    <div class="login_content">
+      <el-text class="cookie_des">请从网页版贴吧网络面板中获取</el-text>
+      <el-input
+          v-model="cookie"
+          style="max-width: 400px"
+          placeholder="输入贴吧Cookie"
+      >
+        <template #prepend>Cookie</template>
+      </el-input>
+      <el-button class="save_btn" type="primary" @click="get_or_set_cookie">保存</el-button>
+
+    </div>
   </div>
 </template>
 
-<script>
-import {createVNode, ref, render} from "vue";
-import loginBox from "./loginBox.vue";
-import { type } from "@tauri-apps/api/os";
+<script setup>
 
-export default {
-  props: {
-    title: {
-      type: String,
-      default: ""
-    },
-    closeFn:{
-      type:Function
-    }
+import {ref,onMounted} from "vue";
+import {invoke} from "@tauri-apps/api/tauri";
+import {ElNotification} from 'element-plus'
+
+let props=defineProps({
+  title: {
+    type: String,
+    default: "123"
   },
-  setup(props) {
-    let key = ref(Math.floor(Math.random() * 10000));
-    return {key}
+  closeFn: {
+    type: Function
   }
-};
-
-export function showLoginBox(title) {
-  const vnode = createVNode(loginBox, {title});
-  render(vnode, document.body);
+})
+let cookie = ref("")
+const get_or_set_cookie = () => {
+  invoke("get_or_set_cookie", {cookie: cookie.value}).then(res=>{
+    if ("ok"===res){
+      props.closeFn()
+      window.location.reload()
+    }else{
+      cookie.value=res
+    }
+  }).catch(e=>{
+    ElNotification({
+      title: '失败',
+      message: e,
+      type: 'error'
+    })
+  })
 }
+onMounted(()=>{
+  get_or_set_cookie()
+});
 </script>
 
 <style scoped lang="scss">
@@ -46,16 +70,16 @@ export function showLoginBox(title) {
   overflow: hidden;
   transform: translate(-50%, -50%);
 
-  &:hover{
+  &:hover {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
     transition: all 200ms;
   }
 
-  .head{
+  .head {
     width: 100%;
     display: block;
 
-    .login_title{
+    .login_title {
       margin: 0 auto;
       line-height: 30px;
       font-size: 15px;
@@ -63,25 +87,46 @@ export function showLoginBox(title) {
       color: white;
     }
 
-    .close_b{
+    .close_b {
       width: 40px;
       height: 100%;
       float: right;
       display: flex;
-      
+
       align-items: center;
       justify-content: center;
 
-      &:hover{
+      &:hover {
         background: red;
       }
 
-      img{
+      img {
         width: 25px;
         height: 25px;
         object-fit: cover;
       }
     }
+  }
+
+  .login_content {
+    height: 100%;
+    width: 100%;
+    padding-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -30px;
+    flex-direction: column;
+    .cookie_des{
+      font-size: 12px;
+      height: 25px;
+    }
+  }
+
+  .save_btn {
+    margin-top: 20px;
+    height: 25px;
+    font-size: 14px;
   }
 
 }

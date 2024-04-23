@@ -2,42 +2,70 @@
   <div class="container">
     <div class="head" v-if="showHead">
       <div class="title" data-tauri-drag-region>马克贴</div>
-      <div class="btn_box">
-        <div class="user">
-          <el-dropdown trigger="click">
+      <div class="user">
+        <el-dropdown trigger="click">
+          <div>
+            <el-text class="username">{{ userinfo.user_name_show }}</el-text>
             <el-avatar
-                title="用户"
-                class="avatar_box"
-                size="small"
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :title="userinfo.user_name_show"
+              class="avatar_box"
+              size="small"
+              :src="'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/'+userinfo.user_portrait"
             />
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item @click="toggle_login">账号</el-dropdown-item>
-                <el-dropdown-item>设置</el-dropdown-item>
-                <el-dropdown-item>关于</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="toggle_login">账号</el-dropdown-item>
+              <el-dropdown-item>设置</el-dropdown-item>
+              <el-dropdown-item>关于</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+      <div class="btn_box">
         <div @click="appWindow.minimize()" class="min">
-          <img src="./assets/icon/min.png" alt/>
+          <img src="./assets/icon/min.png" alt />
         </div>
         <div @click="appWindow.close()" class="close">
-          <img src="./assets/icon/close.png" alt/>
+          <img src="./assets/icon/close.png" alt />
         </div>
       </div>
     </div>
-    <router-view/>
+    <!-- <transition name="fade" mode="out-in"> -->
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
+    <!-- </transition> -->
     <div class="content_mask" v-if="showMask" @click="toggle_mask"></div>
-    <loginBox v-if="showLogin" :closeFn="toggle_login"/>
+    <loginBox v-if="showLogin" :closeFn="toggle_login" />
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {appWindow} from "@tauri-apps/api/window";
+import { ref, onMounted, provide } from "vue";
+import { appWindow } from "@tauri-apps/api/window";
 import loginBox from "./components/loginBox.vue";
+import { invoke } from "@tauri-apps/api/tauri";
+import { ElNotification } from "element-plus";
+let userinfo = ref({
+  user_name_show: "未登录",
+  user_portrait: "",
+  open_uid: ""
+});
+console.log(this);
+onMounted(() => {
+  invoke("get_user_info").then(u => {
+    userinfo.value = u;
+    ElNotification({
+      type: "success",
+      title: "登录成功",
+      message: "你好！" + u.user_name_show + "，欢迎回来~",
+      position: "bottom-right"
+    });
+  });
+});
 //切换登录框状态
 const toggle_login = () => {
   showMask.value = !showMask.value;
@@ -55,23 +83,50 @@ let showLogin = ref(false);
 </script>
 
 <style lang="scss">
+.user {
+  width: 10%;
+  height: 100%;
+  transition: all 200ms;
+  > div > div {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-around !important;
+    width: 100%;
+  }
+  &:hover {
+    cursor: pointer;
+    // background: #ccc;
+    .username {
+      color: black;
+    }
+  }
+  .username {
+    line-height: 30px;
+    font-size: 12px;
+    color: white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 50px;
+  }
+  .avatar_55x {
+    width: 24px;
+  }
+}
 .btn_box {
   height: 100%;
-  width: 18%;
+  width: 12%;
   display: flex;
   align-items: center;
   border-top-right-radius: 10px;
 
   > div {
     height: 100%;
-    width: 33.33%;
+    width: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 200ms;
-  }
-
-  .avatar_box {
   }
 
   .close:hover {
@@ -91,7 +146,7 @@ let showLogin = ref(false);
 
 .title {
   height: 100%;
-  width: 82%;
+  width: 78%;
   text-indent: 54%;
   line-height: 30px;
   font-size: 14px;
@@ -119,7 +174,6 @@ let showLogin = ref(false);
     border-radius: 10px;
     background: rgba($color: #cccccc, $alpha: 0.5);
     transition: all 200ms;
-
   }
 }
 

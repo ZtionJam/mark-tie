@@ -1,8 +1,8 @@
 [package]
 name = "mark-tie"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "0.1.0"
+description = "mark-tie"
+authors = ["ZtionJam"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -15,10 +15,12 @@ tauri = { version = "1", features = [ "window-all", "path-all", "shell-open"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 visdom = "1.0.1"
-reqwest = {version = "0.12.4",features = ["blocking"] }
+reqwest = {version = "0.12.4", features = ["blocking", "gzip"] }
 lazy_static = "1.4.0"
 url = "2.5.0"
 base64 = "0.21.7"
+urlencoding = "1.0"
+rand = "0.8.5"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

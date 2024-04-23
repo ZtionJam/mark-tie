@@ -4,12 +4,11 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 use visdom::Vis;
 
-use crate::action;
 use crate::constants::url::*;
 use crate::util::user::get_user_avatar;
 
 ///接口总返回体
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Response<T> {
     pub no: usize,
     pub error: String,
@@ -46,6 +45,7 @@ pub struct Topic {
     pub topic_avatar: String,
     pub discuss_num: usize,
 }
+
 ///吧信息
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Forum {
@@ -55,11 +55,21 @@ pub struct Forum {
     pub member_count: usize,
     pub thread_count: usize,
 }
+
+///吧信息
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UserInfo {
+    pub user_name_show: String,
+    pub mobilephone: String,
+    pub open_uid: usize,
+    pub user_portrait: String,
+}
+
 impl Feed {
     pub fn from_html(html: &String) -> Vec<Self> {
         let root = Vis::load(html).unwrap();
-        let mut li = root.find(".j_feed_li");
-        let mut feeds = li.map(|index, e| {
+        let li = root.find(".j_feed_li");
+        let mut feeds = li.map(|_, e| {
             let c = e.children();
             let id = match e.get_attribute("data-thread-id") {
                 None => "1".to_string(),
@@ -68,10 +78,10 @@ impl Feed {
             let forum = c.find(".feed-forum-link").text();
             let title = c.find(".feed-item-link").text();
             let content = c.find(".n_txt").text();
-            let img: Vec<String> = c.find(".n_img img").map(|i, img| {
+            let img: Vec<String> = c.find(".n_img img").map(|_, img| {
                 match img.get_attribute("original") {
                     None => "".to_string(),
-                    Some(attr) => action::down_base64(attr.to_string()).unwrap()
+                    Some(attr) => attr.to_string()
                 }
             });
             let author = c.find(".post_author");
@@ -80,7 +90,7 @@ impl Feed {
                 user_id = attr.to_string()
             }
             if user_id.len() > 0 {
-                let url = Url::parse(ZTION_HOME.clone().to_string().add(user_id.as_str()).as_str()).unwrap();
+                let url = Url::parse(ZTION_HOME.to_string().add(user_id.as_str()).as_str()).unwrap();
                 let query_pairs = url.query_pairs().into_owned();
                 for (key, value) in query_pairs {
                     if key.eq("id") {

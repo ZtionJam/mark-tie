@@ -7,11 +7,15 @@ pub mod url {
     //用户头像地址
     pub const USER_AVATAR: &str = "https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/";
     //Ztion
-    pub const ZTION_HOME: &str = "https://ztion.cn"; 
+    pub const ZTION_HOME: &str = "https://ztion.cn";
     //榜单
     pub const TOPIC: &str = "https://tieba.baidu.com/hottopic/browse/topicList";
     //热门吧
     pub const HOT_FORUM: &str = "https://tieba.baidu.com/f/index/rcmdForum?pn=1&rn=12";
+    //用户信息，取个id和名字
+    pub const USER_INFO: &str = "https://tieba.baidu.com/f/user/json_userinfo?_=1715439890726";
+    //帖子详情页
+    pub const FEED_PAGE: &str = "https://tieba.baidu.com/p/{pid}";
 }
 
 pub mod header {
@@ -34,7 +38,24 @@ pub mod client {
 
     lazy_static! {
         pub  static ref CLIENT: Client = {
-            Client::new()
+            Client::builder()
+            .gzip(true)
+            .build()
+            .unwrap()
+        };
+    }
+}
+
+pub mod app {
+    use std::sync::Mutex;
+
+    use lazy_static::lazy_static;
+
+    use crate::config::Config;
+
+    lazy_static! {
+        pub  static  ref  CONFIG: Mutex<Config> = {
+            Mutex::new(Config::read())
         };
     }
 }

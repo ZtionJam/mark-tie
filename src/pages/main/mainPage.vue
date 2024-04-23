@@ -5,12 +5,12 @@
       <div style="height: 30px"></div>
       <div class="marked" ref="forum">
         <div class="bar_head" v-for="bar in data.marked" :key="bar.forum_id" :title="bar.forum_name+'吧'">
-          <div class="bar_logo"><img :src="bar.avatar" alt=""></div>
+          <div class="bar_logo"><img :src="img_proxy(bar.avatar)" alt=""></div>
           <div class="bar_name">{{ bar.forum_name }}吧</div>
         </div>
       </div>
     </div>
-    <div class="cards" v-infinite-scroll="load_next_page" infinite-scroll-delay="2000" v-masonry gutter="0"
+    <div class="cards" v-infinite-scroll="load_next_page" infinite-scroll-delay="1000" v-masonry gutter="0"
          transition-duration="0s">
       <div v-masonry-tile>
         <div class="card_box">
@@ -28,18 +28,19 @@
       <div v-for="feed in data.feeds" :key="feed.id||feed.title" v-masonry-tile>
         <div class="card_box">
           <div class="feed_forum">
-            <div class="avatar_box"><img :src="feed.user_avatar" alt=""></div>
+            <div class="avatar_box"><img :src="img_proxy(feed.user_avatar)" alt=""></div>
             <div class="user_box">
               <div> {{ feed.username }}</div>
               <div>@{{ feed.forum }}</div>
             </div>
           </div>
-          <div class="feed_title">{{ feed.title }}</div>
-          <div class="feed_content">{{ feed.content }}</div>
+          <div class="feed_title" @click="open_feed(feed)">{{ feed.title }}</div>
+          <div class="feed_content" @click="open_feed(feed)">{{ feed.content }}</div>
           <div class="feed_img_list">
             <div v-for="(url,index) in feed.img" :key="url">
-              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="url"
-                        :preview-src-list="feed.img"
+              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="img_proxy(url)"
+                        :preview-src-list="img_proxy_list(feed.img)"
+                        :lazy="true"
                         :initial-index="index"/>
             </div>
           </div>
@@ -47,16 +48,23 @@
       </div>
     </div>
     <div class="load_tile" v-if="page_loading" v-loading="true"></div>
+    <div class="fixed_btn">
+      <div title="刷新" @click="flush()"><img src="@/assets/icon/flash.png" alt=""></div>
+      <div title="返回顶部" @click="to_top()"><img src="@/assets/icon/top.png" alt=""></div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {inject, nextTick, onMounted, ref} from "vue";
+import {inject, nextTick, onMounted, ref,getCurrentInstance,onActivated} from "vue";
+import { useRouter,useRoute } from "vue-router";
 import {invoke} from "@tauri-apps/api/tauri";
 import {ElNotification} from 'element-plus'
 
 const redrawVueMasonry = inject("redrawVueMasonry")
-
+const img_proxy = getCurrentInstance().proxy.img_proxy;
+const img_proxy_list = getCurrentInstance().proxy.img_proxy_list;
+const router = useRouter();
 let data = ref({
   page: {
     limit: 20,
@@ -103,10 +111,24 @@ let data = ref({
 });
 
 let forum = ref();
+const route=useRoute()
+onActivated(()=>{
+  document.getElementById(route.meta.scrollBoxId).scrollTop=route.meta.savePosition
+})
+const to_top=()=>{
+  document.getElementById(route.meta.scrollBoxId).scrollTop=0
+}
+const flush=()=>{
+  data.value.page_is_loading = true
+  data.value.feeds=[];
+  to_top();
+  load_next_page();
+  data.value.page_is_loading = false
+}
 onMounted(async () => {
   //加载热榜
   data.value.hot_all = await invoke("get_topic");
-  data.value.feeds.value = [];
+  data.value.feeds = [];
   await load_next_page();
   data.value.hot_show_more = true
   toggle_more();
@@ -140,6 +162,7 @@ let page_loading = ref(false);
  * @returns {Promise<void>}
  */
 const load_next_page = async () => {
+  console.log("出发加载")
   if (page_loading.value) {
     return;
   }
@@ -159,9 +182,15 @@ const load_next_page = async () => {
       type: 'error'
     })
   });
-  data.value.feeds.push(...new_page);
+  if(new_page){
+    console.log(new_page)
+    data.value.feeds.push(...new_page);
+    //这里每次固定+20，不管实际返回了多少条，跟网页版一样，
+    data.value.page.offset += 20;
+  }
+
   page_loading.value = false;
-  data.value.page.offset += data.value.page.limit;
+
 }
 /**
  * 顶部的滚动
@@ -170,6 +199,12 @@ const load_next_page = async () => {
 const marked_wheel = (event) => {
   forum.value.scrollLeft += event.deltaY;
   event.preventDefault();
+}
+/**
+ * 打开帖子
+ */
+const open_feed=(feed)=>{
+  router.push("/feed")
 }
 </script>
 
@@ -452,6 +487,37 @@ const marked_wheel = (event) => {
         font-size: 16px;
       }
 
+    }
+  }
+  .fixed_btn{
+    width: 40px;
+    height: 80px;
+    position: fixed;
+    top: 75%;
+    left: 90%;
+    >div{
+      width: 100%;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      background: white;
+      margin-top: 10px;
+      opacity: 0.6;
+      transition: all 200ms;
+      box-shadow: 0 0px 5px rgba(23, 82, 30, 0.25);
+      &:hover{
+        opacity: 1;
+        transition: all 200ms;
+        transform: scale(1.1);
+        box-shadow: 0 0px 10px rgba(23, 82, 30, 0.25);
+        cursor: pointer;
+      }
+      >img{
+        width: 80%;
+        width: 80%;
+      }
     }
   }
 }
