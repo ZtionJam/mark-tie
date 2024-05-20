@@ -50,6 +50,7 @@ fn handle_request(mut tcp_stream: TcpStream) {
     let _ = tcp_stream.write_all(response.as_bytes());
 }
 
+///下载文件
 pub fn down_file(url: String) -> Result<Vec<u8>, String> {
     let response = match client::CLIENT.get(url)
         .headers(header::COMMON_HEADER.clone())
@@ -66,6 +67,7 @@ pub fn down_file(url: String) -> Result<Vec<u8>, String> {
     Err("下载文件失败".to_string())
 }
 
+///从url中分割参数
 fn query_url_param(url: String, param: String) -> Result<String, String> {
     if let Some(query_start) = url.find("?") {
         let end_of_url = url.find("HTTP/").unwrap_or(url.len());
@@ -87,6 +89,7 @@ fn query_url_param(url: String, param: String) -> Result<String, String> {
     Err("none".to_string())
 }
 
+///随机获取一个未使用的端口号
 fn get_random_unused_port() -> u16 {
     let mut rng = rand::thread_rng();
     let mut port: u16;

@@ -1,30 +1,33 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import main from '@/pages/main/mainPage'
 import feed from '@/pages/feed/feedPage'
 
 const routes = [
     {
         path: "/",
-        redirect: '/main',
-        meta: { title: '马克贴' },
-        meta: { keepAlive: true }
+        redirect: '/main'
     },
     {
         path: "/main",
         component: main,
-        meta: { title: '马克贴' },
+        name: "mainPage",
         meta: {
+            title: '马克贴',
             keepAlive: true,
             saveScrollPosition: true,
             scrollBoxId: "box",
-            savePosition:0
+            savePosition: 0
         }
 
     },
     {
         path: "/feed",
         component: feed,
-        meta: { title: '马克贴' }
+        name: "feedPage",
+        meta: {
+            title: '马克贴',
+            keepAlive: false
+        }
     },
 ]
 const router = createRouter({

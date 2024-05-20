@@ -7,10 +7,10 @@
           <div>
             <el-text class="username">{{ userinfo.user_name_show }}</el-text>
             <el-avatar
-              :title="userinfo.user_name_show"
-              class="avatar_box"
-              size="small"
-              :src="'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/'+userinfo.user_portrait"
+                :title="userinfo.user_name_show"
+                class="avatar_box"
+                size="small"
+                :src="'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/'+userinfo.user_portrait"
             />
           </div>
           <template #dropdown>
@@ -24,37 +24,41 @@
       </div>
       <div class="btn_box">
         <div @click="appWindow.minimize()" class="min">
-          <img src="./assets/icon/min.png" alt />
+          <img src="./assets/icon/min.png" alt/>
         </div>
         <div @click="appWindow.close()" class="close">
-          <img src="./assets/icon/close.png" alt />
+          <img src="./assets/icon/close.png" alt/>
         </div>
       </div>
     </div>
-    <!-- <transition name="fade" mode="out-in"> -->
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
+    <router-view v-slot="{ Component,route }">
+      <keep-alive :include="getKeepPage()">
+        <component :is="Component"/>
       </keep-alive>
     </router-view>
-    <!-- </transition> -->
     <div class="content_mask" v-if="showMask" @click="toggle_mask"></div>
-    <loginBox v-if="showLogin" :closeFn="toggle_login" />
+    <loginBox v-if="showLogin" :closeFn="toggle_login"/>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from "vue";
-import { appWindow } from "@tauri-apps/api/window";
+import {onMounted, ref} from "vue";
+import {appWindow} from "@tauri-apps/api/window";
 import loginBox from "./components/loginBox.vue";
-import { invoke } from "@tauri-apps/api/tauri";
-import { ElNotification } from "element-plus";
+import {invoke} from "@tauri-apps/api/tauri";
+import {ElNotification} from "element-plus";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
+const getKeepPage = () => {
+  return router.getRoutes().filter(route => route.meta.keepAlive).map(route => route.name);
+}
+
 let userinfo = ref({
   user_name_show: "未登录",
   user_portrait: "",
   open_uid: ""
 });
-console.log(this);
 onMounted(() => {
   invoke("get_user_info").then(u => {
     userinfo.value = u;
@@ -87,12 +91,14 @@ let showLogin = ref(false);
   width: 10%;
   height: 100%;
   transition: all 200ms;
+
   > div > div {
     display: flex !important;
     align-items: center;
     justify-content: space-around !important;
     width: 100%;
   }
+
   &:hover {
     cursor: pointer;
     // background: #ccc;
@@ -100,6 +106,7 @@ let showLogin = ref(false);
       color: black;
     }
   }
+
   .username {
     line-height: 30px;
     font-size: 12px;
@@ -109,10 +116,12 @@ let showLogin = ref(false);
     overflow: hidden;
     width: 50px;
   }
+
   .avatar_55x {
     width: 24px;
   }
 }
+
 .btn_box {
   height: 100%;
   width: 12%;

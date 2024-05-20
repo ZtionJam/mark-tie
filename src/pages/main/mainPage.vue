@@ -56,8 +56,8 @@
 </template>
 
 <script setup>
-import {inject, nextTick, onMounted, ref,getCurrentInstance,onActivated} from "vue";
-import { useRouter,useRoute } from "vue-router";
+import {getCurrentInstance, inject, nextTick, onActivated, onMounted, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import {invoke} from "@tauri-apps/api/tauri";
 import {ElNotification} from 'element-plus'
 
@@ -105,22 +105,22 @@ let data = ref({
     // }
   ],
   hot_show_more: false,
-  page_is_loading:true,
-  page_data_is_loading:false,
-  show_content_mask:true
+  page_is_loading: true,
+  page_data_is_loading: false,
+  show_content_mask: true
 });
 
 let forum = ref();
-const route=useRoute()
-onActivated(()=>{
-  document.getElementById(route.meta.scrollBoxId).scrollTop=route.meta.savePosition
+const route = useRoute()
+onActivated(() => {
+  document.getElementById(route.meta.scrollBoxId).scrollTop = route.meta.savePosition
 })
-const to_top=()=>{
-  document.getElementById(route.meta.scrollBoxId).scrollTop=0
+const to_top = () => {
+  document.getElementById(route.meta.scrollBoxId).scrollTop = 0
 }
-const flush=()=>{
+const flush = () => {
   data.value.page_is_loading = true
-  data.value.feeds=[];
+  data.value.feeds = [];
   to_top();
   load_next_page();
   data.value.page_is_loading = false
@@ -162,7 +162,6 @@ let page_loading = ref(false);
  * @returns {Promise<void>}
  */
 const load_next_page = async () => {
-  console.log("出发加载")
   if (page_loading.value) {
     return;
   }
@@ -182,8 +181,7 @@ const load_next_page = async () => {
       type: 'error'
     })
   });
-  if(new_page){
-    console.log(new_page)
+  if (new_page) {
     data.value.feeds.push(...new_page);
     //这里每次固定+20，不管实际返回了多少条，跟网页版一样，
     data.value.page.offset += 20;
@@ -203,8 +201,13 @@ const marked_wheel = (event) => {
 /**
  * 打开帖子
  */
-const open_feed=(feed)=>{
-  router.push("/feed")
+const open_feed = (feed) => {
+  router.push(
+      {
+        name: "feedPage",
+        query: {pid: feed.id}
+      }
+  )
 }
 </script>
 
@@ -489,13 +492,15 @@ const open_feed=(feed)=>{
 
     }
   }
-  .fixed_btn{
+
+  .fixed_btn {
     width: 40px;
     height: 80px;
     position: fixed;
     top: 75%;
     left: 90%;
-    >div{
+
+    > div {
       width: 100%;
       height: 50%;
       display: flex;
@@ -507,14 +512,16 @@ const open_feed=(feed)=>{
       opacity: 0.6;
       transition: all 200ms;
       box-shadow: 0 0px 5px rgba(23, 82, 30, 0.25);
-      &:hover{
+
+      &:hover {
         opacity: 1;
         transition: all 200ms;
         transform: scale(1.1);
         box-shadow: 0 0px 10px rgba(23, 82, 30, 0.25);
         cursor: pointer;
       }
-      >img{
+
+      > img {
         width: 80%;
         width: 80%;
       }
