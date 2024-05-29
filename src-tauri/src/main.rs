@@ -20,7 +20,7 @@ fn main() {
     });
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_index_page,get_topic,get_hot_forum,get_or_set_cookie,get_user_info,get_config])
+        .invoke_handler(tauri::generate_handler![get_index_page,get_topic,get_hot_forum,get_or_set_cookie,get_user_info,get_config,get_feed_info])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

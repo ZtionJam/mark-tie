@@ -1,4 +1,5 @@
 use serde_json::Value;
+use visdom::Vis;
 
 use crate::config::Config;
 use crate::constants;
@@ -127,6 +128,29 @@ pub fn get_config() -> Result<Config, String> {
     Ok(config.clone())
 }
 
+#[tauri::command]
+pub fn get_feed_info(pid: String) {
+    let page_url = url::FEED_PAGE.clone().replace("{pid}", pid.as_str());
+    println!("地址{}", page_url);
+    let body_text = &client::CLIENT.get(page_url)
+        .headers(get_now_header())
+        .send().unwrap()
+        .text().unwrap();
+    let root = Vis::load(body_text).unwrap();
+    let title = root.find(".left_section .core_title_txt").text();
+    let content = root.find(".left_section .d_post_content").text();
+    let img_list = root.find(".left_section .d_post_content img").map(|_, e| {
+        println!("e:{}", e.text());
+        match e.get_attribute("src") {
+            None => {}
+            Some(o) => { println!("找到图片：{}", o.to_string()) }
+        }
+        return "".to_string();
+    });
+
+    println!("{}", body_text);
+    println!("标题：{},内容{}", title, content);
+}
 
 
 

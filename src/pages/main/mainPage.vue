@@ -395,6 +395,7 @@ const open_feed = (feed) => {
 
         .avatar_box {
           width: 50px;
+          height: 50px;
           overflow: hidden;
           border-radius: 25px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);

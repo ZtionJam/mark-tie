@@ -159,13 +159,13 @@ let showLogin = ref(false);
   text-indent: 54%;
   line-height: 30px;
   font-size: 14px;
-  color: white;
+  color: black;
   font-weight: bold;
 }
 
 .container {
   overflow: hidden;
-  background-color: #dceffe;
+  background-color: #ffffff;
   width: 98vw;
   height: 98vh;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
@@ -190,13 +190,14 @@ let showLogin = ref(false);
   height: 30px;
   width: 98vw;
   position: fixed;
-  background-color: #3388ff;
+  background-color: #f5f5f4;
   z-index: 999999;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   display: flex;
   align-items: center;
   overflow: hidden;
+  border-bottom: 1px solid #ccc;
 }
 
 body {
