@@ -141,7 +141,6 @@ pub fn get_feed_info(pid: String) -> FeedInfo {
     let title = root.find(".left_section .core_title_txt").text();
     let content = root.find(".left_section .p_postlist > div:nth-child(1) .d_post_content").text();
     let mut img_list: Vec<String> = root.find(".p_postlist > div:nth-child(1) .d_post_content_main  .d_post_content img").map(|_, e| {
-        println!("e:{}", e.text());
         if let Some(o) = e.get_attribute("src") {
             return o.to_string();
         }
