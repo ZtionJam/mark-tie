@@ -3,19 +3,19 @@
     <div class="water">
       <div class="content_box">
         <div class="master_box">
-          <div class="avatar_box"><img :src="data.master.avatar" alt=""></div>
-          <div class="username_box">{{ data.master.name }}</div>
-          <div class="level_box">{{ data.master.level }}</div>
+          <div class="avatar_box"><img :src="data.feed.master.avatar" alt=""></div>
+          <div class="username_box">{{ data.feed.master.name }}</div>
+          <div class="level_box">{{ data.feed.master.level }}</div>
         </div>
         <div class="feed_content_box">
-          <div class="feed_title_box">{{ data.feed_title }}</div>
+          <div class="feed_title_box">{{ data.feed.feed_title }}</div>
           <div class="feed_info_box">
-            {{ data.feed_content }}
+            {{ data.feed.feed_content }}
           </div>
           <div class="feed_img_list">
-            <div v-for="(url,index) in data.feed_img_list">
-              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="url"
-                        :preview-src-list="data.feed_img_list"
+            <div v-for="(url,index) in data.feed.feed_img_list">
+              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="img_proxy(url)"
+                        :preview-src-list="img_proxy_list(data.feed.feed_img_list)"
                         :lazy="true"
                         :initial-index="index"/>
             </div>
@@ -40,31 +40,32 @@
 </template>
 
 <script setup>
-import {useRouter} from "vue-router";
+import {useRouter,useRoute} from "vue-router";
 import {invoke} from "@tauri-apps/api/tauri";
-import {onMounted, ref} from "vue";
+import {onMounted, ref,getCurrentInstance} from "vue";
+const img_proxy = getCurrentInstance().proxy.img_proxy;
+const img_proxy_list = getCurrentInstance().proxy.img_proxy_list;
 
 const router = useRouter();
+const route=useRoute();
 let data = ref({
   page_loading: true,
-  master: {
-    name: "南山的北海",
+  feed:{
+    master: {
+    name: "加载中...",
     avatar: 'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-    level: '新秀'
+    level: '加载中...'
   },
-  feed_title: "资中球溪高级中学真的是一所好学校，低进高出，改变了很多",
-  feed_content: "建议学校改造升级，把硬件设施提升一下，比如教室环境，厕所，食堂，宿舍等，重新刷漆贴砖，还有学校内部车道，由水泥路改为沥青路，绿化优化等等，建议请专业人员重新打造一下，改善下这所农村学校的环境。",
-  feed_img_list: [
-    'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-    'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-    'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-    'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-  ],
+  feed_title: "加载中...",
+  feed_content: "加载中...",
+  feed_img_list: [],
+  }
 });
 
-onMounted(() => {
+onMounted(async () => {
+  let ret = await invoke("get_feed_info", {pid: route.query.pid})
+  data.value.feed=ret
   data.value.page_loading = false;
-  invoke("get_feed_info", {pid: '9034259693'})
 });
 
 const back = () => {
@@ -148,13 +149,20 @@ const back = () => {
         margin-top: 10px;
         text-indent: 20px;
         font-size: 15px;
+        line-height: 16px
       }
 
       .feed_img_list {
         margin-top: 10px;
         width: 100%;
 
-
+        :deep(.el-image-viewer__wrapper) {
+          overflow: hidden;
+          width: 98vw;
+          height: 95vh;
+          margin: 5vh auto 0;
+          border-radius: 10px;
+        }
         > div {
           width: 30%;
           display: inline-block;
@@ -162,6 +170,7 @@ const back = () => {
 
           .feed_img {
             width: 100%;
+            height: 150px;
             border-radius: 5px;
             overflow: hidden;
             object-fit: cover;

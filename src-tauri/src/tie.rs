@@ -65,6 +65,23 @@ pub struct UserInfo {
     pub user_portrait: String,
 }
 
+///帖内信息
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FeedInfo {
+    pub feed_title: String,
+    pub feed_content: String,
+    pub feed_img_list: Vec<String>,
+    pub master: Master,
+}
+
+///作者信息
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Master {
+    pub name: String,
+    pub avatar: String,
+    pub level: String,
+}
+
 impl Feed {
     pub fn from_html(html: &String) -> Vec<Self> {
         let root = Vis::load(html).unwrap();

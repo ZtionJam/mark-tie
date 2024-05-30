@@ -113,7 +113,10 @@ let data = ref({
 let forum = ref();
 const route = useRoute()
 onActivated(() => {
-  document.getElementById(route.meta.scrollBoxId).scrollTop = route.meta.savePosition
+  redrawVueMasonry();
+  nextTick(() => {
+    document.getElementById(route.meta.scrollBoxId).scrollTop = route.meta.savePosition
+  });
 })
 const to_top = () => {
   document.getElementById(route.meta.scrollBoxId).scrollTop = 0
