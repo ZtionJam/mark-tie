@@ -37,6 +37,11 @@
       "csp": null
     },
     "bundle": {
+      "windows": {
+        "wix": {
+          "language": "zh-CN"
+        }
+      },
       "active": true,
       "targets": "all",
       "identifier": "cn.ztion.mark.tie",

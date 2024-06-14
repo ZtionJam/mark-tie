@@ -11,8 +11,8 @@ use crate::util::http::*;
 
 ///获取首页分页数据
 #[tauri::command]
-pub fn get_index_page(limit: &str, offset: &str, lastTid: &str) -> Result<Vec<Feed>, String> {
-    let params = [("is_new", "1"), ("tag_id", "like"), ("limit", limit), ("offset", offset), ("last_tid", lastTid)];
+pub fn get_index_page(limit: &str, offset: &str, last_tid: &str) -> Result<Vec<Feed>, String> {
+    let params = [("is_new", "1"), ("tag_id", "like"), ("limit", limit), ("offset", offset), ("last_tid", last_tid)];
 
     let body_text = &client::CLIENT.get(url::INDEX_PAGE_LIST)
         .headers(get_now_header())
@@ -140,7 +140,7 @@ pub fn get_feed_info(pid: String) -> FeedInfo {
     let root = Vis::load(body_text).unwrap();
     let title = root.find(".left_section .core_title_txt").text();
     let content = root.find(".left_section .p_postlist > div:nth-child(1) .d_post_content").text();
-    let mut img_list: Vec<String> = root.find(".p_postlist > div:nth-child(1) .d_post_content_main  .d_post_content img").map(|_, e| {
+    let img_list: Vec<String> = root.find(".p_postlist > div:nth-child(1) .d_post_content_main  .d_post_content img").map(|_, e| {
         if let Some(o) = e.get_attribute("src") {
             return o.to_string();
         }
@@ -164,6 +164,53 @@ pub fn get_feed_info(pid: String) -> FeedInfo {
         },
     }
 }
+#[tauri::command]
+pub fn get_feed_comment(pid: String,page:u32) -> CommentPage {
+    let page_url = url::FEED_COMMENT_PAGE.replace("{pid}", pid.as_str()).replace("{page}", page.to_string().as_str());
+    let body_text = &client::CLIENT.get(page_url)
+        .headers(get_now_header())
+        .send().unwrap()
+        .text().unwrap();
+    let root = Vis::load(body_text).unwrap();
+    let post_list=root.find(".left_section .p_postlist > div:not(:first-child).l_post");
+    let comments:Vec<Comment>=post_list.map(|_,e|{
+       let child= e.children();
+       let comment_user=  Master{
+            name:child.find(".d_name .p_author_name").text(),
+            level:child.find(".p_badge .d_badge_title").text(),
+            avatar:match child.find(".p_author_face img").attr("src") {
+                Some(att) => {att.to_string()},
+                None => {"".to_string()},
+            }
+        };
+        let content=child.find(".p_content .d_post_content").text().trim().to_string();
+        let img_list=child.find(".p_content .BDE_Image").map(|_,e|{
+           let child= e.children();
+           match child.attr("src") {
+               Some(att) => {att.to_string()},
+               None => {"".to_string()},
+           }
+        }).into();
+        Comment{
+            content,
+            img_list,
+            comment_user
+        }
+    }).into();
+
+    let total=match root.find(".pb_footer .p_thread .l_reply_num .red:first-child").text().parse:: <usize>() {
+        Ok(n) => {n},
+        Err(_) => {0},
+    };
+
+    CommentPage{
+        size:*&comments.len(),
+        data:comments,
+        total,
+        has_next:false
+    }
+}
+
 
 
 

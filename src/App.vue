@@ -110,7 +110,7 @@ let showLogin = ref(false);
   .username {
     line-height: 30px;
     font-size: 12px;
-    color: white;
+    color: #888;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

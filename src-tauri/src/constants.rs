@@ -16,6 +16,8 @@ pub mod url {
     pub const USER_INFO: &str = "https://tieba.baidu.com/f/user/json_userinfo?_=1715439890726";
     //帖子详情页
     pub const FEED_PAGE: &str = "https://tieba.baidu.com/p/{pid}";
+    //帖子评论区
+    pub const FEED_COMMENT_PAGE: &str = "https://tieba.baidu.com/p/{pid}?pn={page}";
 }
 
 pub mod header {

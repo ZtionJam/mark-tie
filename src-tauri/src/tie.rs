@@ -82,6 +82,23 @@ pub struct Master {
     pub level: String,
 }
 
+
+///评论
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Comment {
+    pub content: String,
+    pub img_list: Vec<String>,
+    pub comment_user:Master
+}
+///评论分页
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CommentPage {
+    pub data: Vec<Comment>,
+    pub size: usize,
+    pub has_next:bool,
+    pub total:usize
+}
+
 impl Feed {
     pub fn from_html(html: &String) -> Vec<Self> {
         let root = Vis::load(html).unwrap();
