@@ -1,51 +1,76 @@
 <template>
-  <div id="feed_box" v-loading="data.page_loading">
+  <div
+    id="feed_box"
+    v-loading="data.page_loading"
+    v-infinite-scroll="get_next_comment_page"
+    infinite-scroll-delay="1000"
+  >
     <div class="water">
       <div class="content_box">
         <div class="master_box">
-          <div class="avatar_box"><img :src="data.feed.master.avatar" alt=""></div>
+          <div class="avatar_box">
+            <img :src="data.feed.master.avatar" alt />
+          </div>
           <div class="username_box">{{ data.feed.master.name }}</div>
           <div class="level_box">{{ data.feed.master.level }}</div>
         </div>
         <div class="feed_content_box">
           <div class="feed_title_box">{{ data.feed.feed_title }}</div>
-          <div class="feed_info_box">
-            {{ data.feed.feed_content }}
-          </div>
+          <div class="feed_info_box">{{ data.feed.feed_content }}</div>
           <div class="feed_img_list">
             <div v-for="(url, index) in data.feed.feed_img_list">
-              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="img_proxy(url)"
-                :preview-src-list="img_proxy_list(data.feed.feed_img_list)" :lazy="true" :initial-index="index" />
+              <el-image
+                tabindex="-1"
+                fit="cover"
+                :hide-on-click-modal="true"
+                class="feed_img"
+                :src="img_proxy(url)"
+                :preview-src-list="img_proxy_list(data.feed.feed_img_list)"
+                :lazy="true"
+                :initial-index="index"
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="comment_box" v-masonry gutter="15" transition-duration="0s">
-        <div v-for="comment in data.comment_list" v-masonry-tile>
+        <div v-for="comment in data.comment_list" v-masonry-tile class="comment_card">
           <div class="master_box">
-            <div class="avatar_box"><img :src="comment.comment_user.avatar" alt=""></div>
+            <div class="avatar_box">
+              <img :src="comment.comment_user.avatar" alt />
+            </div>
             <div class="username_box">{{ comment.comment_user.name }}</div>
             <div class="level_box">{{ comment.comment_user.level }}</div>
           </div>
-          <div class="comment_content">
-            {{ comment.content }}
-          </div>
+          <div class="comment_content">{{ comment.content }}</div>
           <div class="comment_img_list_box">
             <div v-for="(url, index) in comment.img_list">
-              <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img" :src="img_proxy(url)"
-                :preview-src-list="img_proxy_list(comment.img_list)" :lazy="true" :initial-index="index" />
+              <el-image
+                tabindex="-1"
+                fit="cover"
+                :hide-on-click-modal="true"
+                class="feed_img"
+                :src="img_proxy(url)"
+                :preview-src-list="img_proxy_list(comment.img_list)"
+                :lazy="true"
+                :initial-index="index"
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="more">
-        <div>没有更多了</div>
+        <div v-if="!data.has_next">没有更多了</div>
       </div>
     </div>
 
     <div class="fixed_btn">
-      <div @click="back"><img src="@/assets/icon/back.png" alt=""></div>
-      <div><img src="@/assets/icon/top.png" alt=""></div>
+      <div @click="back">
+        <img src="@/assets/icon/back.png" alt />
+      </div>
+      <div>
+        <img src="@/assets/icon/top.png" alt />
+      </div>
     </div>
   </div>
 </template>
@@ -64,12 +89,13 @@ let data = ref({
   feed: {
     master: {
       name: "加载中...",
-      avatar: 'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
-      level: '加载中...'
+      avatar:
+        "https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135",
+      level: "加载中..."
     },
     feed_title: "加载中...",
     feed_content: "加载中...",
-    feed_img_list: [],
+    feed_img_list: []
   },
   comment_list: [
     // {
@@ -94,18 +120,34 @@ let data = ref({
     //     'https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.e8d8c93d.SIzKRGfq7QSmtHvyCeC1ZQ?t=1698846135',
     //   ]
     // }
-  ]
+  ],
+  has_next: true,
+  comment_pn: 0
+});
+let onload = false;
+onMounted(async () => {
+  let ret = await invoke("get_feed_info", { pid: route.query.pid });
+  data.value.feed = ret;
+  await get_next_comment_page();
+  data.value.page_loading = false;
 });
 
-onMounted(async () => {
-  let ret = await invoke("get_feed_info", { pid: route.query.pid })
-  data.value.feed = ret
-  data.value.page_loading = false;
-  let comments = await invoke("get_feed_comment", { pid: route.query.pid, page: 1 })
-  console.log(comments)
-  data.value.comment_list.push(...comments.data)
-  console.log(data.value.comment_list)
-});
+const get_next_comment_page = async () => {
+  if (onload) {
+    return;
+  };
+  if (data.value.has_next) {
+    onload=true;
+    let comments = await invoke("get_feed_comment", {
+      pid: route.query.pid,
+      page: ++data.value.comment_pn
+    });
+    console.log(comments);
+    data.value.comment_list.push(...comments.data);
+    data.value.has_next = comments.has_next;
+    onload=false;
+  }
+};
 
 const back = () => {
   router.push("/main");
@@ -123,6 +165,15 @@ const back = () => {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
+
+    .comment_card {
+      transition: all 200ms;
+    }
+    .comment_card:hover {
+      transform: scale(1.03);
+      transition: all 200ms;
+      cursor: pointer;
+    }
 
     .master_box {
       display: flex;
@@ -168,8 +219,10 @@ const back = () => {
 
     .comment_img_list_box {
       display: flex;
+      padding-left: 10px;
+      padding-right: 10px;
 
-      >div {
+      > div {
         width: 30%;
         display: inline-block;
         margin: 2px 5px;
@@ -184,7 +237,7 @@ const back = () => {
       }
     }
 
-    >div {
+    > div {
       background: white;
       border-radius: 10px;
       overflow: hidden;
@@ -250,7 +303,7 @@ const back = () => {
         margin-top: 10px;
         text-indent: 20px;
         font-size: 15px;
-        line-height: 16px
+        line-height: 16px;
       }
 
       .feed_img_list {
@@ -265,7 +318,7 @@ const back = () => {
           border-radius: 10px;
         }
 
-        >div {
+        > div {
           width: 30%;
           display: inline-block;
           margin: 2px 5px;
@@ -289,7 +342,7 @@ const back = () => {
     top: 75%;
     left: 90%;
 
-    >div {
+    > div {
       width: 100%;
       height: 50%;
       display: flex;
@@ -310,7 +363,7 @@ const back = () => {
         cursor: pointer;
       }
 
-      >img {
+      > img {
         width: 80%;
         width: 80%;
       }
@@ -322,7 +375,7 @@ const back = () => {
   width: 100%;
   height: 60px;
 
-  >div {
+  > div {
     text-align: center;
     color: #ccc;
   }

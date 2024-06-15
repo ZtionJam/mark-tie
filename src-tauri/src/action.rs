@@ -1,4 +1,7 @@
+use std::ops::Add;
+use serde::de::value;
 use serde_json::Value;
+use visdom::types::IAttrValue;
 use visdom::Vis;
 
 use crate::config::Config;
@@ -164,50 +167,59 @@ pub fn get_feed_info(pid: String) -> FeedInfo {
         },
     }
 }
+
 #[tauri::command]
-pub fn get_feed_comment(pid: String,page:u32) -> CommentPage {
+pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
     let page_url = url::FEED_COMMENT_PAGE.replace("{pid}", pid.as_str()).replace("{page}", page.to_string().as_str());
+    println!("url:{page_url}");
     let body_text = &client::CLIENT.get(page_url)
         .headers(get_now_header())
         .send().unwrap()
         .text().unwrap();
+    println!("内容{},",body_text);
     let root = Vis::load(body_text).unwrap();
-    let post_list=root.find(".left_section .p_postlist > div:not(:first-child).l_post");
-    let comments:Vec<Comment>=post_list.map(|_,e|{
-       let child= e.children();
-       let comment_user=  Master{
-            name:child.find(".d_name .p_author_name").text(),
-            level:child.find(".p_badge .d_badge_title").text(),
-            avatar:match child.find(".p_author_face img").attr("src") {
-                Some(att) => {att.to_string()},
-                None => {"".to_string()},
+    let post_list = root.find(".left_section .p_postlist > div:not(:first-child).l_post");
+    let comments: Vec<Comment> = post_list.map(|_, e| {
+        let child = e.children();
+        let mut user_id = "".to_string();
+        if let Some(attr) = child.find(".j_user_card").attr("data-field") {
+            let json = attr.to_string().replace("&quot;", "\"");
+            if let Ok(v) = serde_json::from_str(json.as_str()) as Result<Value, _> {
+                if let Some(id) = v.get("id") {
+                    user_id = id.as_str().unwrap().to_string();
+                }
             }
         };
-        let content=child.find(".p_content .d_post_content").text().trim().to_string();
-        let img_list=child.find(".p_content .BDE_Image").map(|_,e|{
-           let child= e.children();
-           match child.attr("src") {
-               Some(att) => {att.to_string()},
-               None => {"".to_string()},
-           }
+
+        let comment_user = Master {
+            name: child.find(".d_name .p_author_name").text(),
+            level: child.find(".p_badge .d_badge_title").text(),
+            avatar: url::USER_AVATAR.to_string().add(&user_id),
+        };
+        let content = child.find(".p_content .d_post_content").text().trim().to_string();
+        let img_list = child.find(".p_content .BDE_Image").map(|_, e| {
+            match e.get_attribute("src") {
+                None => { "".to_string() }
+                Some(att) => { att.to_string() }
+            }
         }).into();
-        Comment{
+        Comment {
             content,
             img_list,
-            comment_user
+            comment_user,
         }
     }).into();
 
-    let total=match root.find(".pb_footer .p_thread .l_reply_num .red:first-child").text().parse:: <usize>() {
-        Ok(n) => {n},
-        Err(_) => {0},
+    let total = match root.find(".pb_footer .p_thread .l_reply_num .red:first-child").text().parse::<usize>() {
+        Ok(n) => { n }
+        Err(_) => { 0 }
     };
-
-    CommentPage{
-        size:*&comments.len(),
-        data:comments,
+    let has_next = root.find(".pb_footer .pb_list_pager a").text().contains("下一页");
+    CommentPage {
+        size: *&comments.len(),
+        data: comments,
         total,
-        has_next:false
+        has_next,
     }
 }
 

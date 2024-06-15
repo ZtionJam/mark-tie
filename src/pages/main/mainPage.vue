@@ -208,8 +208,8 @@ const open_feed = (feed) => {
   router.push(
       {
         name: "feedPage",
-        // query: {pid: feed.id}
-        query: {pid: "9046705650"}
+        query: {pid: feed.id}
+        // query: {pid: "9046705650"}
       }
   )
 }

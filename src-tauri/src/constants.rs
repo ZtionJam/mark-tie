@@ -27,6 +27,13 @@ pub mod header {
     lazy_static! {
       pub  static ref COMMON_HEADER: HeaderMap = {
         let mut headers = HeaderMap::new();
+        // headers.insert("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7".parse().unwrap());
+        // headers.insert("Host","tieba.baidu.com".parse().unwrap());
+        headers.insert("Sec-Ch-Ua","\"Google Chrome\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"".parse().unwrap());
+        headers.insert("Sec-Ch-Ua-Mobile","?0".parse().unwrap());
+        headers.insert("Sec-Ch-Ua-Platform","\"Windows\"".parse().unwrap());
+        headers.insert("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36".parse().unwrap());
+
         headers.insert("Accept-Language","zh-CN,zh;q=0.9".parse().unwrap());
         headers.insert("Accept-Encoding","gzip, deflate, br, zstd".parse().unwrap());
         headers
