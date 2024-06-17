@@ -10,7 +10,7 @@
 
 # 截图
 
-![image-mark_tie_ex](https://res.ztion.cn/imgs/mark_tie_ex.png)
+![image-mark_tie_ex](https://res.ztion.cn/imgs/fixed/mar1.png)
 
 # 技术
 Tauri+Vue3+Rust
