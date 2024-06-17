@@ -1,6 +1,6 @@
 [package]
 name = "mark-tie"
-version = "0.1.0"
+version = "0.0.1"
 description = "mark-tie"
 authors = ["ZtionJam"]
 edition = "2021"

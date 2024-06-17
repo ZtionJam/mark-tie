@@ -1,7 +1,7 @@
 use std::ops::Add;
-use serde::de::value;
+
 use serde_json::Value;
-use visdom::types::IAttrValue;
+
 use visdom::Vis;
 
 use crate::config::Config;
@@ -94,10 +94,7 @@ pub fn get_hot_forum() -> Result<Vec<Forum>, String> {
 /// cookie有值写入，无值获取
 #[tauri::command]
 pub fn get_or_set_cookie(cookie: String) -> Result<String, String> {
-    let mut config = match constants::app::CONFIG.lock() {
-        Ok(c) => { c }
-        Err(_) => { return Err("操作失败，请重试".to_string()); }
-    };
+    let mut config =  constants::app::CONFIG.lock().unwrap();
     if cookie.len() == 0 {
         return Ok(config.cookie.clone());
     }
@@ -176,7 +173,6 @@ pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
         .headers(get_now_header())
         .send().unwrap()
         .text().unwrap();
-    println!("内容{},",body_text);
     let root = Vis::load(body_text).unwrap();
     let post_list = root.find(".left_section .p_postlist > div:not(:first-child).l_post");
     let comments: Vec<Comment> = post_list.map(|_, e| {
@@ -203,7 +199,15 @@ pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
                 Some(att) => { att.to_string() }
             }
         }).into();
+        let time=child.find(".post-tail-wrap > span:nth-child(6)").text();
+        let floor=child.find(".post-tail-wrap > span:nth-child(5)").text();
+        let ip=child.find(".post-tail-wrap > span:nth-child(1)").text();
+        let author=child.find(".louzhubiaoshi_wrap").text().len()>0;
         Comment {
+            author,
+            ip,
+            floor,
+            time,
             content,
             img_list,
             comment_user,

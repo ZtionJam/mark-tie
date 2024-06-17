@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "马克贴",
-    "version": "1.0.3"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {

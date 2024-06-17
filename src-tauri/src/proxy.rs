@@ -4,8 +4,8 @@ use std::net::{TcpListener, TcpStream};
 use rand::Rng;
 use urlencoding::decode;
 
-use crate::constants::{client, header};
 use crate::constants::app::CONFIG;
+use crate::constants::{client, header};
 
 ///启动一个简易的单线程图片代理服务
 /// http://localhost:port/img?url=[UrlEncode(地址)]
@@ -18,7 +18,7 @@ pub fn start_proxy_server() {
         println!("启动代理服务:[127.0.0.1:{}]", port);
         let mut config = CONFIG.lock().unwrap();
         config.port = port.to_string();
-        // config.flush();
+        config.flush();
     }
     println!("qidong");
     loop {
@@ -44,7 +44,7 @@ fn handle_request(mut tcp_stream: TcpStream) {
                 }
             }
         }
-        Err(e) => println!("Failed to read from connection: {}", e)
+        Err(e) => println!("Failed to read from connection: {}", e),
     }
     let response = "HTTP/1.1 404 OK\r\n\r\nparam url is not found";
     let _ = tcp_stream.write_all(response.as_bytes());
@@ -52,11 +52,15 @@ fn handle_request(mut tcp_stream: TcpStream) {
 
 ///下载文件
 pub fn down_file(url: String) -> Result<Vec<u8>, String> {
-    let response = match client::CLIENT.get(url)
+    let response = match client::CLIENT
+        .get(url)
         .headers(header::COMMON_HEADER.clone())
-        .send() {
-        Ok(response) => { response }
-        Err(_) => { return Err("下载文件失败".to_string()); }
+        .send()
+    {
+        Ok(response) => response,
+        Err(_) => {
+            return Err("下载文件失败".to_string());
+        }
     };
 
     if response.status().is_success() {
@@ -106,13 +110,3 @@ fn get_random_unused_port() -> u16 {
 
     port
 }
-
-
-
-
-
-
-
-
-
-

@@ -34,6 +34,8 @@ pub struct Feed {
     pub user_avatar: String,
     pub content: String,
     pub img: Vec<String>,
+    pub time: String,
+    pub post_num: String,
 }
 
 ///热榜
@@ -87,6 +89,10 @@ pub struct Master {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Comment {
     pub content: String,
+    pub ip: String,
+    pub floor: String,
+    pub time: String,
+    pub author: bool,
     pub img_list: Vec<String>,
     pub comment_user:Master
 }
@@ -133,6 +139,8 @@ impl Feed {
                 }
             }
             let username = author.text();
+            let time=c.find(".time").text();
+            let post_num=c.find(".list-post-num em").text();
             Feed {
                 id,
                 forum,
@@ -141,6 +149,8 @@ impl Feed {
                 user_avatar: get_user_avatar(user_id),
                 content,
                 img,
+                time,
+                post_num
             }
         });
 
