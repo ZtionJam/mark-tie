@@ -18,7 +18,7 @@ pub fn start_proxy_server() {
         println!("启动代理服务:[127.0.0.1:{}]", port);
         let mut config = CONFIG.lock().unwrap();
         config.port = port.to_string();
-        config.flush();
+//        config.flush();
     }
     println!("qidong");
     loop {
