@@ -88,6 +88,7 @@ pub struct Master {
 ///评论
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Comment {
+    pub pid: String,
     pub content: String,
     pub ip: String,
     pub floor: String,

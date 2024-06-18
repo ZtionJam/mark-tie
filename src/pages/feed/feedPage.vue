@@ -63,6 +63,20 @@
                         <div>{{ comment.floor }} {{ comment.ip }}</div>
                         <div>{{ comment.time }}</div>
                     </div>
+                    <div class="sub_comment_box">
+                        <div><img :src="comment.comment_user.avatar" alt/>
+                            <p><span class="sub_user_name">Ztion</span>：我看姓就发生大手大脚的哈十九点三</p></div>
+                        <div><img :src="comment.comment_user.avatar" alt/>
+                            <p><span class="sub_user_name">打赏</span>：案件大厦快速打击啊</p></div>
+                        <div><img :src="comment.comment_user.avatar" alt/>
+                            <p><span class="sub_user_name">啊实打实的</span>：的骄傲送到是到家咯撒大大，啊手机打开收到</p>
+                        </div>
+                        <div><img :src="comment.comment_user.avatar" alt/>
+                            <p>
+                                <span class="sub_user_name">脚后跟</span>：就ask多久啊可是大家as，k多久啊是啊实打实的阿斯顿阿，打的啊但是啊啊十。？大的阿萨打
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="more">
@@ -182,7 +196,8 @@ const back = () => {
             height: 25px;
             width: 100%;
             display: flex;
-            background-color: #eeeff3;
+            //            background-color: #eeeff3;
+            //            border-bottom: 1px solid #ccc;
 
             > div {
                 height: 100%;
@@ -191,6 +206,39 @@ const back = () => {
                 font-size: 12px;
                 line-height: 25px;
                 color: #aaa;
+            }
+        }
+
+        .sub_comment_box {
+            width: 100%;
+            background-color: #eeeff3;
+
+            > div {
+                width: 100%;
+                display: flex;
+                //                border: 1px solid #ccc;
+                padding: 5px 10px;
+
+                p {
+                    font-size: 13px;
+                    line-height: 25px;
+                    margin-left: 5px;
+                    padding-right: 5px;
+
+                    .sub_user_name {
+                        color: blue;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                img {
+                    width: 25px;
+                    height: 25px;
+                    border-radius: 5px;
+                }
             }
         }
 
