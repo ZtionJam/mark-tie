@@ -168,7 +168,7 @@ let showLogin = ref(false);
   background-color: #ffffff;
   width: 98vw;
   height: 98vh;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+//  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
   margin: 1vh auto 0;
   border-radius: 10px;
 
