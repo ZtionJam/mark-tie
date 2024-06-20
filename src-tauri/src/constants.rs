@@ -43,11 +43,13 @@ pub mod header {
 
 pub mod client {
     use lazy_static::lazy_static;
-    use reqwest::blocking::Client;
+    use reqwest::{blocking::Client, Proxy};
 
     lazy_static! {
         pub  static ref CLIENT: Client = {
             Client::builder()
+            .proxy(Proxy::http("http://127.0.0.1:7890").unwrap())
+            .proxy(Proxy::https("http://127.0.0.1:7890").unwrap())
             .gzip(true)
             .build()
             .unwrap()

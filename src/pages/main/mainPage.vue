@@ -10,50 +10,48 @@
                 </div>
             </div>
         </div>
-        <div class="cards" v-infinite-scroll="load_next_page" infinite-scroll-delay="1000" v-masonry gutter="0"
+        <div class="cards" v-infinite-scroll="load_next_page" infinite-scroll-delay="1000" v-masonry gutter="20"
              transition-duration="0s">
-            <div v-masonry-tile>
-                <div class="card_box">
-                    <div class="hot_head">贴吧热议榜</div>
-                    <div class="hot_box">
-                        <div v-for="(bang,index) in data.hot" :key="bang.topic_name">
-                            <div>{{ index + 1 }}</div>
-                            <div>{{ bang.topic_name }}</div>
-                            <div>{{ bang.number }}</div>
-                        </div>
-                        <div class="hot_show_more" @click="toggle_more">{{
-                                data.hot_show_more ? "收起" : "展开更多"
-                            }}
-                        </div>
+
+            <div class="card_box" v-masonry-tile>
+                <div class="hot_head">贴吧热议榜</div>
+                <div class="hot_box">
+                    <div v-for="(bang,index) in data.hot" :key="bang.topic_name">
+                        <div>{{ index + 1 }}</div>
+                        <div>{{ bang.topic_name }}</div>
+                        <div>{{ bang.number }}</div>
+                    </div>
+                    <div class="hot_show_more" @click="toggle_more">{{
+                            data.hot_show_more ? "收起" : "展开更多"
+                        }}
                     </div>
                 </div>
             </div>
-            <div v-for="feed in data.feeds" :key="feed.id||feed.title" v-masonry-tile>
-                <div class="card_box">
-                    <div class="feed_forum">
-                        <div class="avatar_box"><img :src="img_proxy(feed.user_avatar)" alt=""></div>
-                        <div class="user_box">
-                            <div> {{ feed.username }}</div>
-                            <div>@{{ feed.forum }}</div>
-                        </div>
+
+            <div class="card_box" v-for="feed in data.feeds" :key="feed.id||feed.title" v-masonry-tile>
+                <div class="feed_forum">
+                    <div class="avatar_box"><img :src="img_proxy(feed.user_avatar)" alt=""></div>
+                    <div class="user_box">
+                        <div> {{ feed.username }}</div>
+                        <div>@{{ feed.forum }}</div>
                     </div>
-                    <div class="feed_title" @click="open_feed(feed)">{{ feed.title }}</div>
-                    <div class="feed_content" @click="open_feed(feed)">{{ feed.content }}</div>
-                    <div class="feed_img_list">
-                        <div v-for="(url,index) in feed.img" :key="url">
-                            <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img"
-                                      :src="img_proxy(url)"
-                                      :preview-src-list="img_proxy_list(feed.img)"
-                                      :lazy="true"
-                                      :initial-index="index"/>
-                        </div>
+                </div>
+                <div class="feed_title" @click="open_feed(feed)">{{ feed.title }}</div>
+                <div class="feed_content" @click="open_feed(feed)">{{ feed.content }}</div>
+                <div class="feed_img_list">
+                    <div v-for="(url,index) in feed.img" :key="url">
+                        <el-image tabindex="-1" fit="cover" :hide-on-click-modal="true" class="feed_img"
+                                  :src="img_proxy(url)"
+                                  :preview-src-list="img_proxy_list(feed.img)"
+                                  :lazy="true"
+                                  :initial-index="index"/>
                     </div>
-                    <div class="feed_count">
-                        <div><img src="@/assets/icon/time.png">
-                            <p>{{ feed.time }}</p></div>
-                        <div @click="open_feed(feed)"><img src="@/assets/icon/comment.png">
-                            <p>{{ feed.post_num }}</p></div>
-                    </div>
+                </div>
+                <div class="feed_count">
+                    <div><img src="@/assets/icon/time.png">
+                        <p>{{ feed.time }}</p></div>
+                    <div @click="open_feed(feed)"><img src="@/assets/icon/comment.png">
+                        <p>{{ feed.post_num }}</p></div>
                 </div>
             </div>
         </div>
@@ -300,19 +298,18 @@ const open_feed = (feed) => {
 
     .cards {
         width: 100%;
-
-        > div {
-            overflow: auto;
-            padding: 10px;
-            width: 47.5%;
-        }
+        padding-left: 2%;
+        box-sizing: border-box;
 
         .card_box {
             background: white;
             border-radius: 10px;
-            overflow: hidden;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
             padding: 10px;
+            width: 450px;
+            margin-top: 20px;
+            height: 200px;
+            overflow: hidden;
 
             .feed_count {
                 height: 25px;

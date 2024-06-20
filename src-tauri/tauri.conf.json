@@ -25,12 +25,13 @@
     },
     "windows": [
       {
-        "title": "mark-tie",
+        "title": "马克贴",
         "width": 1000,
         "height": 700,
         "resizable": true,
         "decorations": false,
-        "maximized":false
+        "maximized":false,
+        "center": true
       }
     ],
     "security": {

@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="comment_box" v-masonry gutter="15" transition-duration="0s">
+            <div class="comment_box" v-masonry gutter="20" transition-duration="0s">
                 <div v-for="comment in data.comment_list" v-masonry-tile class="comment_card">
                     <div class="master_box">
                         <div class="avatar_box">
@@ -180,13 +180,11 @@ const back = () => {
 #feed_box {
     padding-top: 30px;
     width: 100%;
-    height: 100%;
-    overflow-y: scroll;
 
     .comment_box {
         width: 100%;
         box-sizing: border-box;
-        padding: 10px;
+        padding-left: 2%;
 
         .comment_card {
             transition: all 200ms;
@@ -197,8 +195,6 @@ const back = () => {
             height: 25px;
             width: 100%;
             display: flex;
-            //            background-color: #eeeff3;
-            //            border-bottom: 1px solid #ccc;
 
             > div {
                 height: 100%;
@@ -217,7 +213,6 @@ const back = () => {
             > div {
                 width: 100%;
                 display: flex;
-                //                border: 1px solid #ccc;
                 padding: 5px 10px;
 
                 p {
@@ -315,7 +310,7 @@ const back = () => {
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-            width: 47.5%;
+            width: 450px;
             margin-top: 20px;
             // min-height: 150px;
         }
@@ -438,9 +433,9 @@ const back = () => {
 
 .more {
     width: 100%;
-    height: 60px;
 
     > div {
+        height: 60px;
         text-align: center;
         color: #ccc;
     }

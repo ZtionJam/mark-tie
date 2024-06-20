@@ -2,6 +2,14 @@
   <div class="container">
     <div class="head" v-if="showHead">
       <div class="title" data-tauri-drag-region>马克贴</div>
+      <div class="btn_box">
+        <div @click="appWindow.minimize()" class="min">
+          <img src="./assets/icon/min.png" alt/>
+        </div>
+        <div @click="appWindow.close()" class="close">
+          <img src="./assets/icon/close.png" alt/>
+        </div>
+      </div>
       <div class="user">
         <el-dropdown trigger="click">
           <div>
@@ -22,14 +30,7 @@
           </template>
         </el-dropdown>
       </div>
-      <div class="btn_box">
-        <div @click="appWindow.minimize()" class="min">
-          <img src="./assets/icon/min.png" alt/>
-        </div>
-        <div @click="appWindow.close()" class="close">
-          <img src="./assets/icon/close.png" alt/>
-        </div>
-      </div>
+
     </div>
     <router-view v-slot="{ Component,route }">
       <keep-alive :include="getKeepPage()">
@@ -88,9 +89,10 @@ let showLogin = ref(false);
 
 <style lang="scss">
 .user {
-  width: 10%;
+  width: 100px;
   height: 100%;
   transition: all 200ms;
+  float: right;
 
   > div > div {
     display: flex !important;
@@ -123,10 +125,11 @@ let showLogin = ref(false);
 
 .btn_box {
   height: 100%;
-  width: 12%;
+  width: 100px;
   display: flex;
   align-items: center;
   border-top-right-radius: 10px;
+  float: right;
 
   > div {
     height: 100%;
@@ -148,18 +151,19 @@ let showLogin = ref(false);
   }
 
   img {
-    width: 45%;
+    width: 20px;
   }
 }
 
 .title {
   height: 100%;
-  width: 78%;
-  text-indent: 54%;
+  width: 50%;
   line-height: 30px;
   font-size: 14px;
+  text-align: right;
   color: black;
   font-weight: bold;
+  position: fixed;
 }
 
 .container {
@@ -187,8 +191,6 @@ let showLogin = ref(false);
   z-index: 999999;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  display: flex;
-  align-items: center;
   overflow: hidden;
   border-bottom: 1px solid #ccc;
 }
