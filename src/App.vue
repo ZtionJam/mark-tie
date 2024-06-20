@@ -101,7 +101,6 @@ let showLogin = ref(false);
 
   &:hover {
     cursor: pointer;
-    // background: #ccc;
     .username {
       color: black;
     }
@@ -166,18 +165,12 @@ let showLogin = ref(false);
 .container {
   overflow: hidden;
   background-color: #ffffff;
-  width: 98vw;
-  height: 98vh;
-//  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-  margin: 1vh auto 0;
-  border-radius: 10px;
 
   .content_mask {
     position: fixed;
     top: 0;
     left: 1%;
     overflow: hidden;
-    width: 98%;
     height: 95vh;
     margin: 4vh auto 0;
     border-radius: 10px;
@@ -188,7 +181,7 @@ let showLogin = ref(false);
 
 .head {
   height: 30px;
-  width: 98vw;
+  width: 100%;
   position: fixed;
   background-color: #f5f5f4;
   z-index: 999999;

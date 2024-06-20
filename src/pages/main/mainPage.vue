@@ -503,14 +503,6 @@ const open_feed = (feed) => {
                 border-radius: 5px;
                 margin-top: 10px;
 
-                :deep(.el-image-viewer__wrapper) {
-                    overflow: hidden;
-                    width: 98vw;
-                    height: 95vh;
-                    margin: 5vh auto 0;
-                    border-radius: 10px;
-                }
-
                 > div {
                     width: 48%;
                     display: inline-block;

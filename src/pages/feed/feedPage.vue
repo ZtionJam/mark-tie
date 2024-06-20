@@ -153,6 +153,7 @@ onMounted(async () => {
 });
 
 const get_next_comment_page = async () => {
+    console.log("触发加载")
     if (onload) {
         return;
     }
@@ -382,14 +383,6 @@ const back = () => {
                 margin-top: 10px;
                 width: 100%;
 
-                :deep(.el-image-viewer__wrapper) {
-                    overflow: hidden;
-                    width: 98vw;
-                    height: 95vh;
-                    margin: 5vh auto 0;
-                    border-radius: 10px;
-                }
-
                 > div {
                     width: 30%;
                     display: inline-block;
@@ -457,11 +450,4 @@ const back = () => {
     width: 0;
 }
 
-:deep(.el-image-viewer__wrapper) {
-    overflow: hidden;
-    width: 98vw;
-    height: 95vh;
-    margin: 5vh auto 0;
-    border-radius: 10px;
-}
 </style>

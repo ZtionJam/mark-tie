@@ -28,10 +28,9 @@
         "title": "mark-tie",
         "width": 1000,
         "height": 700,
-        "resizable": false,
+        "resizable": true,
         "decorations": false,
-        "maximized":false,
-        "transparent": true
+        "maximized":false
       }
     ],
     "security": {
