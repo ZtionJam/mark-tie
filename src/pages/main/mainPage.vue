@@ -305,10 +305,11 @@ const open_feed = (feed) => {
             background: white;
             border-radius: 10px;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
             padding: 10px;
             width: 450px;
             margin-top: 20px;
-            height: 200px;
+            min-height: 200px;
             overflow: hidden;
 
             .feed_count {
