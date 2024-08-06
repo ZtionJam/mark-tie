@@ -26,7 +26,7 @@
     "windows": [
       {
         "title": "马克贴",
-        "width": 1000,
+        "width": 960,
         "height": 700,
         "resizable": true,
         "decorations": false,

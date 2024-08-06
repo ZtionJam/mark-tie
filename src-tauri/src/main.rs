@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{os::windows, thread};
+use std::thread;
 
 use tauri::Manager;
 use window_shadows::set_shadow;

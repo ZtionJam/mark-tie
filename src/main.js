@@ -30,12 +30,12 @@ let app = createApp(App)
 let config = await invoke("get_config")
 app.config.globalProperties.img_proxy = url => {
     return "666";
-//    return "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(url);
+   // return "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(url);
 };
 app.config.globalProperties.img_proxy_list = function(urls) {
     return Array.from(urls).map(u => {
         return "666";
-//        return "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(u);
+       // return "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(u);
     })
 
 };
