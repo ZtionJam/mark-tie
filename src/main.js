@@ -17,18 +17,18 @@ router.beforeEach((to, from, next) => {
 let app = createApp(App).use(ElementPlus).use(router).use(VueMasonryPlugin);
 
 //图片代理服务器配置
-let config = await invoke("get_config");
-app.config.globalProperties.img_proxy = (url) => {
-  return (
-    "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(url)
-  );
-};
-app.config.globalProperties.img_proxy_list = function (urls) {
-  return Array.from(urls).map((u) => {
-    return (
-      "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(u)
-    );
-  });
-};
+// let config = await invoke("get_config");
+// app.config.globalProperties.img_proxy = (url) => {
+//   return (
+//     "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(url)
+//   );
+// };
+// app.config.globalProperties.img_proxy_list = function (urls) {
+//   return Array.from(urls).map((u) => {
+//     return (
+//       "http://127.0.0.1:" + config.port + "/img?url=" + encodeURIComponent(u)
+//     );
+//   });
+// };
 
 app.mount("#app");

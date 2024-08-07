@@ -33,14 +33,14 @@ import {appWindow} from "@tauri-apps/api/window";
         width: 10%;
         height: 100%;
         display: flex;
-        justify-content: space-around;
+        justify-content: space-evenly;
 
         > div {
-            width: 30px;
-            height: 100%;
+            width: 25px;
+            height: 80%;
             background: rgba(255, 255, 255, 0.5);
             border-radius: 5px;
-            margin-top: 10px;
+            margin-top: 15px;
             margin-right: 10px;
             display: flex;
             justify-content: center;
@@ -53,7 +53,7 @@ import {appWindow} from "@tauri-apps/api/window";
             }
 
             > img {
-                width: 20px;
+                width: 15px;
                 opacity: 0.5;
             }
 

@@ -1,7 +1,6 @@
 pub mod url {
     //首页列表接口
     pub const INDEX_PAGE_LIST: &str = "https://tieba.baidu.com/f/index/feedlist";
-
     //首页今日热点接口
     pub const _INDEX_TODAY_HOT: &str = "https://tieba.baidu.com/f/index/feedlist";
     //用户头像地址
@@ -18,6 +17,8 @@ pub mod url {
     pub const FEED_PAGE: &str = "https://tieba.baidu.com/p/{pid}";
     //帖子评论区
     pub const FEED_COMMENT_PAGE: &str = "https://tieba.baidu.com/p/{pid}?pn={page}";
+    //用于验证cookie
+    pub const SYNC: &str = "https://tieba.baidu.com/mo/q/sync";
 }
 
 pub mod header {
@@ -58,15 +59,21 @@ pub mod client {
 }
 
 pub mod app {
+    use std::path::PathBuf;
     use std::sync::Mutex;
 
     use lazy_static::lazy_static;
-
+    use tauri::api::path::config_dir;
     use crate::config::Config;
 
     lazy_static! {
         pub  static  ref  CONFIG: Mutex<Config> = {
             Mutex::new(Config::read())
+        };
+        pub  static  ref  CONFIG_PATH:PathBuf={
+             config_dir().unwrap()
+                .join("mark_tie")
+                .join("tie_config.json")
         };
     }
 }

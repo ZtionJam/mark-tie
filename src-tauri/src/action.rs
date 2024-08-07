@@ -253,7 +253,7 @@ pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
                     v.get("content")
                         .and_then(|c| c.get("post_id").map(|pid| pid.to_string()))
                 })
-                .unwrap_or_else(|| "".to_string());
+                .unwrap_or_default();
             println!("pid:{}", pid);
             let comment_user = Master {
                 name: child.find(".d_name .p_author_name").text(),
@@ -270,12 +270,11 @@ pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
                 .map(|_, e| match e.get_attribute("src") {
                     None => "".to_string(),
                     Some(att) => att.to_string(),
-                })
-                .into();
+                });
             let time = child.find(".post-tail-wrap > span:nth-child(6)").text();
             let floor = child.find(".post-tail-wrap > span:nth-child(5)").text();
             let ip = child.find(".post-tail-wrap > span:nth-child(1)").text();
-            let author = child.find(".louzhubiaoshi_wrap").text().len() > 0;
+            let author = !child.find(".louzhubiaoshi_wrap").text().is_empty();
             Comment {
                 pid,
                 author,
@@ -286,17 +285,12 @@ pub fn get_feed_comment(pid: String, page: u32) -> CommentPage {
                 img_list,
                 comment_user,
             }
-        })
-        .into();
+        });
 
-    let total = match root
+    let total = root
         .find(".pb_footer .p_thread .l_reply_num .red:first-child")
         .text()
-        .parse::<usize>()
-    {
-        Ok(n) => n,
-        Err(_) => 0,
-    };
+        .parse::<usize>().unwrap_or(0);
     let has_next = root
         .find(".pb_footer .pb_list_pager a")
         .text()
