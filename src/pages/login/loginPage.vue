@@ -15,11 +15,13 @@
 import m_input from "@/components/m_input.vue";
 import m_btn from "@/components/m_btn.vue";
 import {ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+let router=useRouter();
 
 let cookie = ref("");
 
 const go_login = () => {
-  alert(123)
+  router.push("/main")
 }
 </script>
 

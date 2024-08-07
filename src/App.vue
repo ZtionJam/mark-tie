@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <frame/>
-    <router-view/>
+    <transition name="fade">
+      <router-view />
+    </transition>
   </div>
 </template>
 
@@ -10,7 +12,15 @@ import frame from "@/components/frame.vue";
 </script>
 
 <style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
