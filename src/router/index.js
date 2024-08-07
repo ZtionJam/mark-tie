@@ -5,7 +5,7 @@ import login from '@/pages/login/loginPage'
 const routes = [
     {
         path: "/",
-        redirect: '/login'
+        redirect: '/main'
     },
     {
         path: "/main",

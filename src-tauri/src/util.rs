@@ -24,7 +24,7 @@ pub mod http {
         }
         header
     }
-    pub fn get_cookie_header(cookie: String) -> HeaderMap {
+    pub fn get_cookie_header(cookie: &String) -> HeaderMap {
         let mut header = header::COMMON_HEADER.clone();
         header.insert("Cookie", cookie.parse().unwrap());
         header
@@ -51,21 +51,23 @@ pub mod user {
 }
 pub mod file {
     use std::fs;
-    use std::fs::OpenOptions;
+    use std::fs::{create_dir_all, OpenOptions};
     use std::io::Write;
     use std::path::PathBuf;
 
     pub fn save_file(path: &PathBuf, content: String) {
+        let _ = create_dir_all(path.parent().unwrap());
         OpenOptions::new()
             .read(true)
             .write(true)
             .create(true)
+            .truncate(true)
             .open(path)
             .and_then(|mut file| file.write_all(content.as_bytes()))
             .map(|_| ())
             .expect("Save file error")
     }
     pub fn read_file_string(path: &PathBuf) -> String {
-        fs::read_to_string(path).expect("read file error")
+        fs::read_to_string(path).unwrap_or(String::new())
     }
 }

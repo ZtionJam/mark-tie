@@ -5,7 +5,7 @@
             <m_input class="cookie_input" v-model="cookie" text="Cookie" placeholder="Please enter a valid cookie"/>
             <div class="cookie_des"><span>What is a cookie? </span>:Cookie is the login credential of Baidu Tieba, which
                 can
-                be obtained from the developer tool of the browser after login on the web
+                be obtained from the developer tool of the browser after login on the web.
             </div>
             <m_btn @click="go_login" class="login_btn" text="Login"/>
         </div>
@@ -20,18 +20,33 @@ import m_btn from "@/components/m_btn.vue";
 import loading from "@/components/loading.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
+import {invoke} from "@tauri-apps/api/tauri";
+import Notice from "@/components/js/notice.js";
 
 let router = useRouter();
 
 const cookie = ref("");
 const pageLoading = ref(false);
 
-const go_login = () => {
+const go_login = async () => {
+    if (cookie.value.length === 0) {
+        Notice('Please enter a valid cookie', "err");
+        return
+    }
     pageLoading.value = true;
-    setTimeout(() => {
+    await invoke("check_cookie", {
+        cc: {
+            cookie: cookie.value,
+            save: true
+        }
+    }).then(() => {
         pageLoading.value = false;
-    }, 10000)
-    // router.push("/main")
+        Notice('Welcome!', "ok")
+        router.push("/main")
+    }).catch(err => {
+        Notice(err, "err");
+    })
+    pageLoading.value = false;
 }
 </script>
 
@@ -50,6 +65,10 @@ const go_login = () => {
         box-shadow: 5px 30px 25px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         transition: all 300ms;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
         .login_title {
             width: 100%;
@@ -59,12 +78,12 @@ const go_login = () => {
         }
 
         .cookie_input {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .cookie_des {
             font-size: 12px;
-            width: 85%;
+            width: 70%;
             text-indent: 5px;
             margin: 10px auto 0;
             color: #292929;
@@ -80,9 +99,8 @@ const go_login = () => {
 
 
         &:hover {
-            //transition: all 300ms;
-            //width: 51%;
-            //height: 41%;
+            transition: all 300ms;
+            box-shadow: 5px 35px 30px rgba(0, 0, 0, 0.25);
         }
     }
 }

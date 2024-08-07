@@ -24,16 +24,19 @@ import {appWindow} from "@tauri-apps/api/window";
     top: 0;
     left: 0;
     display: flex;
+    justify-content: space-between;
+
 
     .title_bar {
         width: 90%;
     }
 
     .btns {
-        width: 10%;
+        width: 60px;
         height: 100%;
         display: flex;
-        justify-content: space-evenly;
+        justify-content: space-between;
+        margin-right: 20px;
 
         > div {
             width: 25px;
@@ -41,10 +44,13 @@ import {appWindow} from "@tauri-apps/api/window";
             background: rgba(255, 255, 255, 0.5);
             border-radius: 5px;
             margin-top: 15px;
-            margin-right: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
+
+            &:nth-child(2):hover {
+                background: rgba(255, 0, 0, 0.5);
+            }
 
             &:hover {
                 background: rgba(255, 255, 255, 0.8);

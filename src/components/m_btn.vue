@@ -15,7 +15,7 @@ defineProps({
 
 <style scoped lang="scss">
 .btn_box {
-    width: 100%;
+    width: 100px;
     display: flex;
     justify-content: center;
     align-items: center;

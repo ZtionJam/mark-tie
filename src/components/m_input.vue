@@ -20,7 +20,7 @@ defineEmits(['update:modelValue']);
 
 <style scoped lang="scss">
 .input_box {
-    width: 100%;
+    width: 250px;
     height: 35px;
     display: flex;
     justify-content: center;
@@ -38,15 +38,13 @@ defineEmits(['update:modelValue']);
         border-radius: 5px;
         opacity: 0.5;
         padding: 0 10px;
+        transition: all 300ms;
 
         &:focus {
+            transition: all 300ms;
             outline: none;
             border: 1px solid #2289f1;
             box-shadow: 2px 10px 10px rgba(0, 0, 0, 0.25);
-        }
-
-        &:active {
-            border: none;
         }
     }
 
