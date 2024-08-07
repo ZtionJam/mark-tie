@@ -17,7 +17,7 @@ mod tie;
 mod util;
 
 fn main() {
-    thread::spawn(|| start_proxy_server());
+    thread::spawn(start_proxy_server);
 
     tauri::Builder::default()
         .setup(|app| {
