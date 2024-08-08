@@ -25,6 +25,7 @@ import {appWindow} from "@tauri-apps/api/window";
     left: 0;
     display: flex;
     justify-content: space-between;
+    z-index: 999;
 
 
     .title_bar {
@@ -47,9 +48,11 @@ import {appWindow} from "@tauri-apps/api/window";
             display: flex;
             justify-content: center;
             align-items: center;
-
+          &:nth-child(2) {
+            background: rgba(255, 0, 0, 0.5);
+          }
             &:nth-child(2):hover {
-                background: rgba(255, 0, 0, 0.5);
+                background: rgba(255, 0, 0, 0.8);
             }
 
             &:hover {

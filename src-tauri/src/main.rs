@@ -32,6 +32,7 @@ fn main() {
             let main_window = app.get_window("main").unwrap();
             #[cfg(any(windows, target_os = "macos"))]
             set_shadow(&main_window, true).unwrap();
+            let _ = main_window.set_focus();
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
