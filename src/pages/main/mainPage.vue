@@ -30,13 +30,20 @@
         <div class="user_bar">
             <div class="avatar_box">
                 <div class="avatar"><img src="@/assets/img/avatar.jpg" alt=""/></div>
-                <div class="name">ZtionJam</div>
+                <div class="name">{{ userinfo.username }}</div>
             </div>
             <div v-for="(item,index) in bar_btn" @click="toggle_bar(index)"
                  :class="{underLine:now_bar===index,bar_btn}">
                 {{ item.name }}
             </div>
-            <div class="search_box">搜索</div>
+            <div class="search_box">
+                <el-input
+                class="search"
+                v-model="search"
+                placeholder="搜索"
+                :prefix-icon="Search"
+                />
+            </div>
         </div>
         <!--全屏组件-->
         <loading :visible="pageLoading" text="Check login"/>
@@ -52,10 +59,11 @@ import card from "@/pages/main/card.vue";
 import {useRouter} from "vue-router";
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {EffectCreative, Mousewheel} from 'swiper/modules';
+import { Search } from '@element-plus/icons-vue'
 
 let router = useRouter();
 const card_wrap = ref(null);
-let creativeEffect = {
+const creativeEffect = {
     prev: {
         translate: [-90, 0, 0],
         scale: 0.85,
@@ -69,16 +77,29 @@ let creativeEffect = {
     limitProgress: Math.floor(3 / 2),
     shadowPerProgress: true,
 }
-let now_bar = ref(0)
-let title = ref("Recommended post");
-let bar_btn = [
+//当前页签
+const now_bar = ref(0);
+const title = ref("Recommended post");
+//搜索框
+const search = ref("")
+//按钮
+const bar_btn = [
     {name: "推荐", title: "Recommended post"},
     {name: "收藏", title: "Favorite"},
     {name: "进吧", title: "Enter TieBa"},
     {name: "关注的", title: "My Followee"},
     {name: "设置", title: "Mark-tie setting"}];
-let cards = [{name: "000"}, {name: "111"}, {name: "222"}, {name: "333"}, {name: "444"}, {name: "555"}];
+//帖子列表
+const cards = [{name: "000"}, {name: "111"}, {name: "222"}, {name: "333"}, {name: "444"}, {name: "555"}];
+//页面加载状态
 const pageLoading = ref(false);
+//登录信息
+const userinfo=ref({
+    userId:"",
+    isLogin:false,
+    username:"未登录",
+    avatar:""
+});
 onMounted(async () => {
     pageLoading.value = true;
     await invoke("check_login").catch((err) => {
@@ -163,6 +184,7 @@ const updateActiveIndex = () => {
         margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
+        border: 1px solid #ccc;
         align-items: center;
         z-index: 999;
         border-radius: 10px;
@@ -219,19 +241,27 @@ const updateActiveIndex = () => {
                 width: 100px;
                 height: 20px;
                 text-align: center;
-                margin-top: 5px;
+                margin-top: 2px;
                 font-weight: bold;
             }
         }
 
         .search_box {
-            width: 200px;
+            width: 180px;
             height: 35px;
-            border: 1px solid #ccc;
             line-height: 35px;
-            text-indent: 10px;
-            margin-right: 10px;
-            border-radius: 10px;
+            margin-right: 20px;
+
+            .search{
+                height: 35px;
+                width: 180px;
+                border-radius: 10px;
+
+                :deep(.el-input__wrapper){
+                    background-color:rgba(0,0,0,0);
+                    border-color: #dd32f8;
+                }
+            }
         }
     }
 }
