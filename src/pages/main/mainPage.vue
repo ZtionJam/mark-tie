@@ -59,7 +59,7 @@ import card from "@/pages/main/card.vue";
 import {useRouter} from "vue-router";
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {EffectCreative, Mousewheel} from 'swiper/modules';
-import { Search } from '@element-plus/icons-vue'
+import {Search} from '@element-plus/icons-vue'
 
 let router = useRouter();
 const card_wrap = ref(null);
@@ -167,6 +167,7 @@ const updateActiveIndex = () => {
                 width: 680px;
                 height: 430px;
                 border-radius: 10px;
+                overflow: hidden;
                 //background: url("../../assets/img/tieBg.jpg") no-repeat;
                 background: white;
                 background-size: 100%;
